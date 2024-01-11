@@ -10,7 +10,7 @@ import vttp2023.batch4.paf.day23emart.models.LineItem;
 public class LineItemRepository {
 
     @Autowired
-    JdbcTemplate template;
+    private JdbcTemplate template;
 
     public boolean storeLineItems(String poId, LineItem li) {
         return template.update(Queries.SQL_INSERT_LINE_ITEM, li.getItem(), li.getQuantity(), poId)>0;

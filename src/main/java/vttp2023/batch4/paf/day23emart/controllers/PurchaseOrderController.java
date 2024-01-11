@@ -21,7 +21,7 @@ import vttp2023.batch4.paf.day23emart.services.PurchaseOrderService;
 public class PurchaseOrderController {
 
 	@Autowired
-	PurchaseOrderService poSvc;
+	private PurchaseOrderService poSvc;
 
 	@GetMapping(path = {"/", "/index.html"})
 	public ModelAndView getIndex(HttpSession sess) {
@@ -52,6 +52,8 @@ public class PurchaseOrderController {
 		// System.out.println(items);
 		items.add(itemToAdd);
 		po.setLineItems(items);
+		// one line add below
+		// po.getLineItems().add(itemToAdd);
 		// System.out.println(po.getLineItems());
 
 		sess.setAttribute("po", po);

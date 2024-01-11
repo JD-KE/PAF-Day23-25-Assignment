@@ -14,10 +14,10 @@ import vttp2023.batch4.paf.day23emart.repositories.PurchaseOrderRepository;
 public class PurchaseOrderService {
 
     @Autowired
-    PurchaseOrderRepository poRepo;
+    private PurchaseOrderRepository poRepo;
 
     @Autowired
-    LineItemRepository liRepo;
+    private LineItemRepository liRepo;
 
     public boolean storeOrder(PurchaseOrder order) {
         String poId = generateId();
@@ -38,6 +38,8 @@ public class PurchaseOrderService {
     }
 
     private String generateId() {
+        // one line generate Id
+        // String poId = UUID.randomUUID().toString.substring(0,8);
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder sb = new StringBuilder();
         Random random = new Random();

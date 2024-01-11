@@ -11,7 +11,7 @@ import vttp2023.batch4.paf.day23emart.models.PurchaseOrder;
 public class PurchaseOrderRepository {
 
     @Autowired
-    JdbcTemplate template;
+    private JdbcTemplate template;
 
     public boolean storeOrder(String poId, PurchaseOrder order) {
         return template.update(Queries.SQL_INSERT_PURCHASE_ORDER, poId, order.getName(), order.getAddress()) > 0;
