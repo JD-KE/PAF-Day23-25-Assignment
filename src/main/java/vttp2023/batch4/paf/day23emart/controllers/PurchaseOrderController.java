@@ -76,6 +76,7 @@ public class PurchaseOrderController {
 			mav.setViewName("index.html");
 			mav.setStatus(HttpStatusCode.valueOf(500));
 			mav.addObject("po", sess.getAttribute("po"));
+			System.out.println(e);
 		}
 		
 

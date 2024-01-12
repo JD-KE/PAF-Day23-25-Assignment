@@ -7,6 +7,6 @@ public class PurchaseOrderException extends Exception {
 
     public PurchaseOrderException(String msg) {
         super(msg);
-        System.out.println(msg);
+        // System.out.println(msg);
     }
 }
