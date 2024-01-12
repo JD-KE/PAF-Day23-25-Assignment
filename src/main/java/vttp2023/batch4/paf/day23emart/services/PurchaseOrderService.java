@@ -21,6 +21,8 @@ public class PurchaseOrderService {
     @Autowired
     private LineItemRepository liRepo;
 
+    // rollbackFor is to target which exceptions will trigger the rollback when thrown by the method
+    // also can adjust isolation lvl with attribute Isolation = ISOLATION.value
     @Transactional(rollbackFor = PurchaseOrderException.class)
     public boolean storeOrder(PurchaseOrder order) throws PurchaseOrderException {
         String poId = generateId();
@@ -31,15 +33,22 @@ public class PurchaseOrderService {
         order.setOrderId(poId);
         
         boolean orderStored = poRepo.storeOrder(order);
+        // to test custom exception for inserting purchase order; fake failure by assigning false to boolean variable returned by storeOrder method
         // orderStored = false;
+
+        // if purchase order fail to be inserted into database, throws the custom exception with custom message
         if (!orderStored) throw new PurchaseOrderException("Purchase order not inserted into database: " + order.toString());
         int count = 0;
         for (LineItem li : order.getLineItems()) {
             boolean lineItemsStored = liRepo.storeLineItems(poId, li);
+            // to test custom exception for inserting line item; fake failure by assigning false to boolean variable returned by storeLineItems method
             // lineItemsStored = false;
+
+            // if line item fail to be inserted into database, throws the custom exception with custom message
             if (!lineItemsStored) {
                 throw new PurchaseOrderException("Line item not inserted into database: " + li.toString() + " for order %s".formatted(poId));
             }
+            // random test for custom exception in case any method condition fail
             // if (count > 0) throw new PurchaseOrderException("Test error lol");
             // count++;
         }
