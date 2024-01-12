@@ -3,6 +3,7 @@ package vttp2023.batch4.paf.day23emart.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpSession;
+import vttp2023.batch4.paf.day23emart.exceptions.PurchaseOrderException;
 import vttp2023.batch4.paf.day23emart.models.LineItem;
 import vttp2023.batch4.paf.day23emart.models.PurchaseOrder;
 import vttp2023.batch4.paf.day23emart.services.PurchaseOrderService;
@@ -67,8 +69,15 @@ public class PurchaseOrderController {
 		ModelAndView mav = new ModelAndView("redirect:/index.html");
 
 		PurchaseOrder order = (PurchaseOrder) sess.getAttribute("po");
-		boolean orderStored = poSvc.storeOrder(order);
-		sess.invalidate();
+		try {
+			boolean orderStored = poSvc.storeOrder(order);
+			sess.invalidate();
+		} catch (PurchaseOrderException e) {
+			mav.setViewName("index.html");
+			mav.setStatus(HttpStatusCode.valueOf(500));
+			mav.addObject("po", sess.getAttribute("po"));
+		}
+		
 
 		return mav;
 	}

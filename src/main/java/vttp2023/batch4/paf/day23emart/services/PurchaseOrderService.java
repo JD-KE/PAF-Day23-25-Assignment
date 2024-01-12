@@ -4,7 +4,9 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import vttp2023.batch4.paf.day23emart.exceptions.PurchaseOrderException;
 import vttp2023.batch4.paf.day23emart.models.LineItem;
 import vttp2023.batch4.paf.day23emart.models.PurchaseOrder;
 import vttp2023.batch4.paf.day23emart.repositories.LineItemRepository;
@@ -19,19 +21,27 @@ public class PurchaseOrderService {
     @Autowired
     private LineItemRepository liRepo;
 
-    public boolean storeOrder(PurchaseOrder order) {
+    @Transactional(rollbackFor = PurchaseOrderException.class)
+    public boolean storeOrder(PurchaseOrder order) throws PurchaseOrderException {
         String poId = generateId();
         while (poRepo.haveId(poId)) {
             poId = generateId();
         }
+        System.out.println(poId);
+        order.setOrderId(poId);
         
-        boolean orderStored = poRepo.storeOrder(poId, order);
-        if (!orderStored) return false;
+        boolean orderStored = poRepo.storeOrder(order);
+        // orderStored = false;
+        if (!orderStored) throw new PurchaseOrderException("Purchase order not inserted into database: " + order.toString());
+        int count = 0;
         for (LineItem li : order.getLineItems()) {
             boolean lineItemsStored = liRepo.storeLineItems(poId, li);
+            // lineItemsStored = false;
             if (!lineItemsStored) {
-                return false;
+                throw new PurchaseOrderException("Line item not inserted into database: " + li.toString() + " for order %s".formatted(poId));
             }
+            // if (count > 0) throw new PurchaseOrderException("Test error lol");
+            // count++;
         }
         return true;
 

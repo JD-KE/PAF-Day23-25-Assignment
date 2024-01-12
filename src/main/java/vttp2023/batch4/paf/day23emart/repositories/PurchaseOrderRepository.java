@@ -13,8 +13,8 @@ public class PurchaseOrderRepository {
     @Autowired
     private JdbcTemplate template;
 
-    public boolean storeOrder(String poId, PurchaseOrder order) {
-        return template.update(Queries.SQL_INSERT_PURCHASE_ORDER, poId, order.getName(), order.getAddress()) > 0;
+    public boolean storeOrder(PurchaseOrder order) {
+        return template.update(Queries.SQL_INSERT_PURCHASE_ORDER, order.getOrderId(), order.getName(), order.getAddress()) > 0;
     }
 
     public boolean haveId(String poId) {
