@@ -14,7 +14,11 @@
             <tr>
                <td>Name: </td>
                <td>
-						<input type="text" name="name" size="30" data-th-field="*{name}">
+					<select name="name" id="dropdownlist" class="form-control">
+						<option value="0">Select Option</option>
+						<option th:each="option : ${names}" th:value="${option}" th:text="${option}"></option>
+					</select>
+						<!-- <input type="text" name="name" size="30" data-th-field="*{name}"> -->
                </td>
             </tr>
             <tr>

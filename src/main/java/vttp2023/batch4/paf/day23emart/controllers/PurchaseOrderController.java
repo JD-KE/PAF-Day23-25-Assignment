@@ -34,6 +34,8 @@ public class PurchaseOrderController {
 			mav.addObject("po", sess.getAttribute("po"));
 			System.out.println("get from session");
 		}
+		String[] names = poSvc.getAllRegisteredCustomer();
+		mav.addObject("names", names);
 		
 		return mav;
 	}
@@ -60,6 +62,8 @@ public class PurchaseOrderController {
 
 		sess.setAttribute("po", po);
 		mav.addObject("po", sess.getAttribute("po"));
+		String[] names = poSvc.getAllRegisteredCustomer();
+		mav.addObject("names", names);
 
 		return mav;
 	}
@@ -69,18 +73,26 @@ public class PurchaseOrderController {
 		ModelAndView mav = new ModelAndView("redirect:/index.html");
 
 		PurchaseOrder order = (PurchaseOrder) sess.getAttribute("po");
-		try {
-			boolean orderStored = poSvc.storeOrder(order);
+
+		if (poSvc.sendOrderMessage(order)) {
 			sess.invalidate();
-		} catch (PurchaseOrderException e) {
-			// catch custom exception if storeOrder method throws it
-			// return to index html and set status code error, add sess ver of purchase order to avoid additional error
+		} else {
 			mav.setViewName("index.html");
 			mav.setStatus(HttpStatusCode.valueOf(500));
 			mav.addObject("po", sess.getAttribute("po"));
-			// print out custom message contained by error to identify where error happened
-			System.out.println(e);
 		}
+		// try {
+		// 	boolean orderStored = poSvc.storeOrder(order);
+		// 	sess.invalidate();
+		// } catch (PurchaseOrderException e) {
+		// 	// catch custom exception if storeOrder method throws it
+		// 	// return to index html and set status code error, add sess ver of purchase order to avoid additional error
+		// 	mav.setViewName("index.html");
+		// 	mav.setStatus(HttpStatusCode.valueOf(500));
+		// 	mav.addObject("po", sess.getAttribute("po"));
+		// 	// print out custom message contained by error to identify where error happened
+		// 	System.out.println(e);
+		// }
 		
 
 		return mav;
